@@ -15,10 +15,10 @@ export class UsersService {
     return createdUser.save();
   }
 
-  async findByUsername(username: string): Promise<User> {
-    const user = await this.userModel.findOne({ username }).exec();
+  async findByEmail(email: string): Promise<User> {
+    const user = await this.userModel.findOne({ email }).exec();
     if (!user) {
-      throw new NotFoundException(`User with username "${username}" not found`);
+      throw new NotFoundException(`User with email "${email}" not found`);
     }
     return user;
   }
