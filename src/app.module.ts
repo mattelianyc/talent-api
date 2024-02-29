@@ -5,6 +5,10 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { StripeModule } from './account/stripe.module';
+import { PaymentsController } from './account/payments.controller';
+import { AccountModule } from './account/account.module';
+import { SeederModule } from './common/seeders/seeder.module';
 
 @Module({
   imports: [
@@ -13,9 +17,12 @@ import { MongooseModule } from '@nestjs/mongoose';
     }),
     UsersModule, 
     AuthModule,
-    MongooseModule.forRoot('mongodb://localhost/talent'),    
+    MongooseModule.forRoot('mongodb://localhost/talent'),
+    StripeModule,
+    AccountModule,
+    SeederModule
   ],
-  controllers: [AppController],
+  controllers: [AppController, PaymentsController],
   providers: [AppService],
 })
 export class AppModule {}
