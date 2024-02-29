@@ -1,6 +1,6 @@
+// stripe.service.ts
 import { Injectable } from '@nestjs/common';
 import Stripe from 'stripe';
-import { CreatePaymentIntentDto } from './dto/create-payment-intent.dto';
 
 @Injectable()
 export class StripeService {
@@ -12,13 +12,13 @@ export class StripeService {
     });
   }
 
-  async createPaymentIntent(createPaymentIntentDto: CreatePaymentIntentDto) {
+  async createPaymentIntent(amount: number) {
     try {
       const paymentIntent = await this.stripe.paymentIntents.create({
-        amount: createPaymentIntentDto.amount,
-        currency: 'usd', // or any other currency
+        amount,
+        currency: 'usd', // Adjust currency as needed
       });
-      return paymentIntent;
+      return { clientSecret: paymentIntent.client_secret }; // Return the client secret
     } catch (error) {
       throw new Error(`Failed to create payment intent: ${error.message}`);
     }

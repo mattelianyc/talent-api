@@ -1,5 +1,6 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { CreatePaymentIntentDto } from './dto/create-payment-intent.dto'; // Assuming you have this DTO
+// payments.controller.ts
+import { Body, Controller, Post, HttpException, HttpStatus } from '@nestjs/common';
+import { CreatePaymentIntentDto } from './dto/create-payment-intent.dto';
 import { StripeService } from './stripe.service';
 
 @Controller('payments')
@@ -8,8 +9,13 @@ export class PaymentsController {
 
   @Post('/create-payment-intent')
   async createPaymentIntent(@Body() createPaymentIntentDto: CreatePaymentIntentDto) {
-    const { amount } = createPaymentIntentDto;
-    console.log('am ount  ', amount)
-    // Now use the amount to create a payment intent
+    try {
+      const { amount } = createPaymentIntentDto;
+      const paymentIntent = await this.stripeService.createPaymentIntent(amount);
+      console.log('payment intent w/ client secret ?   ', paymentIntent)
+      return paymentIntent; // This will include the clientSecret
+    } catch (error) {
+      throw new HttpException('Failed to create payment intent', HttpStatus.BAD_REQUEST);
+    }
   }
 }
