@@ -34,9 +34,9 @@ export class SeederService {
 
   private async seedUsers() {
     const usersData = [
-      { email: 'user1@example.com', password: await bcrypt.hash('password1', 10) },
-      { email: 'user2@example.com', password: await bcrypt.hash('password2', 10) },
-      { email: 'user3@example.com', password: await bcrypt.hash('password3', 10) },
+      { email: 'a', password: await bcrypt.hash('1', 10) },
+      { email: 'b', password: await bcrypt.hash('2', 10) },
+      { email: 'c', password: await bcrypt.hash('3', 10) },
     ];
 
     return this.userModel.insertMany(usersData);
@@ -61,8 +61,18 @@ export class SeederService {
         description: `Transaction ${i + 1}`,
         amount: Math.floor(Math.random() * 100) + 1,
         date: new Date(),
+        stripeTransactionId: this.generateFakeStripeId(), // Add a generated fake Stripe ID
       });
     }
     return transactions;
   }
+  
+  private generateFakeStripeId() {
+    // Generate a fake Stripe transaction ID for seeding purposes.
+    // This is just for simulation and should be replaced with real IDs in production.
+    const prefix = 'ch_';
+    const randomPart = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    return prefix + randomPart;
+  }
+  
 }

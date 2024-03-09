@@ -10,10 +10,9 @@ export class PaymentsController {
   @Post('/create-payment-intent')
   async createPaymentIntent(@Body() createPaymentIntentDto: CreatePaymentIntentDto) {
     try {
-      const { amount } = createPaymentIntentDto;
-      const paymentIntent = await this.stripeService.createPaymentIntent(amount);
-      console.log('payment intent w/ client secret ?   ', paymentIntent)
-      return paymentIntent; // This will include the clientSecret
+      const paymentIntent = await this.stripeService.createPaymentIntent(createPaymentIntentDto.amount);
+      console.log('Payment Intent with Client Secret and ID:', paymentIntent);
+      return paymentIntent; 
     } catch (error) {
       throw new HttpException('Failed to create payment intent', HttpStatus.BAD_REQUEST);
     }

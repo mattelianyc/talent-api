@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Account, Transaction } from './schemas/account.schema';
+import { Account, Transaction, TransactionSchema } from './schemas/account.schema';
 
 @Injectable()
 export class AccountService {
@@ -42,4 +42,28 @@ export class AccountService {
     const { transactions } = await this.ensureAccount(userId);
     return transactions;
   }
+
+  async recordPayment(userId: string, stripeTransactionId: string, amount: number) {
+    const account = await this.accountModel.findOne({ userId }).exec();
+    if (!account) {
+      throw new NotFoundException('Account not found.');
+    }
+  
+    const newTransaction: any = {
+      description: 'Funds Added',
+      amount,
+      date: new Date(),
+      stripeTransactionId,
+    };
+  
+    account.transactions.push(newTransaction);
+    account.balance += amount;
+    await account.save();
+  
+    return {
+      balance: account.balance,
+      transaction: newTransaction,
+    };
+  }
+
 }

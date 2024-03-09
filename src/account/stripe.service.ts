@@ -18,9 +18,15 @@ export class StripeService {
         amount,
         currency: 'usd', // Adjust currency as needed
       });
-      return { clientSecret: paymentIntent.client_secret }; // Return the client secret
+      // Return both clientSecret and the Payment Intent ID
+      return { 
+        clientSecret: paymentIntent.client_secret,
+        paymentIntentId: paymentIntent.id, // Include the payment intent ID in the response
+      };
     } catch (error) {
       throw new Error(`Failed to create payment intent: ${error.message}`);
     }
   }
+
 }
+

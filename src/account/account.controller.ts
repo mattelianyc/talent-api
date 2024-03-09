@@ -25,4 +25,14 @@ export class AccountController {
     const transaction = await this.accountService.addTransaction(userId, transactionDto.description, transactionDto.amount);
     return { transactionId: transaction._id, status: 'success' };
   }
+
+  @Post(':userId/record-payment')
+  async recordPayment(
+    @Param('userId') userId: string,
+    @Body() body: { paymentIntentId: string; amount: number }
+  ) {
+    // You might want to add additional logic here to confirm payment with Stripe if needed
+    const { paymentIntentId, amount } = body;
+    return this.accountService.recordPayment(userId, paymentIntentId, amount);
+  }
 }
