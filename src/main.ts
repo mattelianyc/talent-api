@@ -6,8 +6,8 @@ import { SeederService } from './common/seeders/seeder.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  // const seeder = app.get(SeederService);
-  // await seeder.seed();
+  const seeder = app.get(SeederService);
+  await seeder.seed();
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new LoggingInterceptor());
   app.enableCors();

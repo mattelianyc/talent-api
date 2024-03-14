@@ -9,6 +9,7 @@ import { StripeModule } from './account/stripe.module';
 import { PaymentsController } from './account/payments.controller';
 import { AccountModule } from './account/account.module';
 import { SeederModule } from './common/seeders/seeder.module';
+import { TalentModule } from './talent/talent.module';
 
 @Module({
   imports: [
@@ -20,7 +21,8 @@ import { SeederModule } from './common/seeders/seeder.module';
     MongooseModule.forRoot('mongodb://localhost/talent'),
     StripeModule,
     AccountModule,
-    SeederModule
+    SeederModule,
+    TalentModule,
   ],
   controllers: [AppController, PaymentsController],
   providers: [AppService],

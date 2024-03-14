@@ -1,31 +1,49 @@
 import * as mongoose from 'mongoose';
 
-const TransactionSchema = new mongoose.Schema({
-  description: { type: String, required: true },
+const PayoutSchema = new mongoose.Schema({
   amount: { type: Number, required: true },
   date: { type: Date, default: Date.now },
-  stripeTransactionId: { type: String, required: true }, // Adding Stripe transaction ID
+  description: { type: String, required: true },
+});
+
+const TransactionSchema = new mongoose.Schema({
+  amount: { type: Number, required: true },
+  date: { type: Date, default: Date.now },
+  description: { type: String, required: true },
+  // You can include more details specific to the transaction here
 });
 
 const AccountSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   balance: { type: Number, required: true },
-  transactions: [TransactionSchema], // Embedding the transactions here
+  transactions: [TransactionSchema],
+  // Fields specific to talent accounts
+  userType: { type: String, enum: ['regular', 'talent'], required: true },
+  revenue: { type: Number, default: 0 }, // Specific to talent users
+  payouts: [PayoutSchema], // Specific to talent users to manage payouts
 });
 
 interface Transaction extends mongoose.Document {
-  description: string;
   amount: number;
   date: Date;
-  stripeTransactionId: string; // Adding Stripe transaction ID in the interface
+  description: string;
+}
+
+interface Payout extends mongoose.Document {
+  amount: number;
+  date: Date;
+  description: string;
 }
 
 interface Account extends mongoose.Document {
   userId: mongoose.Schema.Types.ObjectId;
   balance: number;
   transactions: Transaction[];
+  userType: 'regular' | 'talent';
+  revenue?: number;
+  payouts?: Payout[];
 }
 
 const AccountModel = mongoose.model<Account>('Account', AccountSchema);
 
-export { AccountSchema, TransactionSchema, AccountModel, Transaction, Account };
+export { AccountSchema, TransactionSchema, PayoutSchema, AccountModel, Transaction, Account, Payout };
